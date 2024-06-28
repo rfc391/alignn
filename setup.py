@@ -3,12 +3,12 @@
 https://jarvis.nist.gov.
 """
 
-import ignore
+import ignore # type: ignore
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setuptools.setup( # type: ignore
     name="alignn",
     version="2024.5.27",
     author="Kamal Choudhary, Brian DeCost",
@@ -46,7 +46,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/usnistgov/alignn",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(), # type: ignore
     package_data={"alignn.ff": ["all_models_ff.json"]},
     classifiers=[
         "Programming Language :: Python :: 3",
