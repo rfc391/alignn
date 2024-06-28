@@ -14,6 +14,7 @@
 -->
 
 # Table of Contents
+
 * [Introduction](#intro)
 * [Installation](#install)
 * [Examples](#example)
@@ -28,17 +29,19 @@
 * [Funding support](#fund)
 
 <a name="intro"></a>
-# ALIGNN (Introduction)
-The Atomistic Line Graph Neural Network (https://www.nature.com/articles/s41524-021-00650-1)  introduces a new graph convolution layer that explicitly models both two and three body interactions in atomistic systems. This is achieved by composing two edge-gated graph convolution layers, the first applied to the atomistic line graph *L(g)* (representing triplet interactions) and the second applied to the atomistic bond graph *g* (representing pair interactions).
 
+# ALIGNN (Introduction)
+
+The Atomistic Line Graph Neural Network (<https://www.nature.com/articles/s41524-021-00650-1>)  introduces a new graph convolution layer that explicitly models both two and three body interactions in atomistic systems. This is achieved by composing two edge-gated graph convolution layers, the first applied to the atomistic line graph *L(g)* (representing triplet interactions) and the second applied to the atomistic bond graph *g* (representing pair interactions).
 
 ![ALIGNN layer schematic](https://github.com/usnistgov/alignn/blob/develop/alignn/tex/schematic_lg.jpg)
 
 <a name="install"></a>
 Installation
 -------------------------
+
 First create a conda environment:
-Install miniconda environment from https://conda.io/miniconda.html
+Install miniconda environment from <https://conda.io/miniconda.html>
 Based on your system requirements, you'll get a file something like 'Miniconda3-latest-XYZ'.
 
 Now,
@@ -47,11 +50,13 @@ Now,
 bash Miniconda3-latest-Linux-x86_64.sh (for linux)
 bash Miniconda3-latest-MacOSX-x86_64.sh (for Mac)
 ```
+
 Download 32/64 bit python 3.10 miniconda exe and install (for windows)
 
 #### Method 1 (conda based installation)
 
 Now, let's make a conda environment, say "my_alignn", choose other name as you like::
+
 ```
 conda create --name my_alignn python=3.10
 conda activate my_alignn
@@ -66,7 +71,6 @@ If you need CUDA support, it's best to install PyTorch and DGL before installing
 conda install dgl=2.1.0 pytorch torchvision torchaudio pytorch-cuda -c pytorch -c nvidia
 ```
 
-
 #### Method 2 (edit/debug in-place install)
 
 You can laso install a development version of alignn by cloning the repository and installing in place with pip:
@@ -77,10 +81,10 @@ cd alignn
 python -m pip install -e .
 ```
 
-
-#### Method 3 (using pypi):
+#### Method 3 (using pypi)
 
 As an alternate method, ALIGNN can also be installed using `pip` command as follows:
+
 ```
 pip install alignn
 pip install  dgl -f https://data.dgl.ai/wheels/torch-2.1/cu121/repo.html
@@ -90,19 +94,18 @@ pip install  dgl -f https://data.dgl.ai/wheels/torch-2.1/cu121/repo.html
 Examples
 ---------
 
-
 | Notebooks                                                                                                                                      | Google&nbsp;Colab                                                                                                                                        | Descriptions                                                                                                                                                                                                                                                                                                                                                                                              |
 | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Regression model](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/alignn_jarvis_leaderboard.ipynb)                                                       | [![Open in Google Colab]](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/alignn_jarvis_leaderboard.ipynb)                                 | Examples for developing single output regression model for exfoliation energies of 2D materials.                                                                                                                                                                                                                                                                       |
 | [MLFF](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/Train_ALIGNNFF_Mlearn.ipynb)                                                  | [![Open in Google Colab]](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/Train_ALIGNNFF_Mlearn.ipynb)                            | Examples of training a machine learning force field for Silicon.                                                                                                                                                                                                                                                                                                                                 |
 | [Miscellaneous tasks](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/Training_ALIGNN_model_example.ipynb)                   | [![Open in Google Colab]](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/Training_ALIGNN_model_example.ipynb)  | Examples for developing single output (such as formation energy, bandgaps) or multi-output (such as phonon DOS, electron DOS) Regression or Classification (such as metal vs non-metal), Using several pretrained models. |
 
-
 [Open in Google Colab]: https://colab.research.google.com/assets/colab-badge.svg
 
 Here, we provide examples for property prediction tasks, development of machine-learning force-fields (MLFF), usage of pre-trained property predictor, MLFFs, webapps etc.
 
 #### Dataset preparation for property prediction tasks
+
 The main script to train model is `train_alignn.py`. A user needs at least the following info to train a model: 1) `id_prop.csv` with name of the file and corresponding value, 2) `config_example.json` a config file with training and hyperparameters.
 
 Users can keep their structure files in `POSCAR`, `.cif`, `.xyz` or `.pdb` files in a directory. In the examples below we will use POSCAR format files. In the same directory, there should be an `id_prop.csv` file.
@@ -118,26 +121,35 @@ A brief help guide (`-h`) can be obtained as follows.
 ```
 train_alignn.py -h
 ```
+
 #### Regression example
+
 Now, the model is trained as follows. Please increase the `batch_size` parameter to something like 32 or 64 in `config_example.json` for general trainings.
 
 ```
 train_alignn.py --root_dir "alignn/examples/sample_data" --config "alignn/examples/sample_data/config_example.json" --output_dir=temp
 ```
+
 #### Classification example
+
 While the above example is for regression, the follwoing example shows a classification task for metal/non-metal based on the above bandgap values. We transform the dataset
 into 1 or 0 based on a threshold of 0.01 eV (controlled by the parameter, `classification_threshold`) and train a similar classification model. Currently, the script allows binary classification tasks only.
+
 ```
 train_alignn.py --root_dir "alignn/examples/sample_data" --classification_threshold 0.01 --config "alignn/examples/sample_data/config_example.json" --output_dir=temp
 ```
 
 #### Multi-output model example
+
 While the above example regression was for single-output values, we can train multi-output regression models as well.
 An example is given below for training formation energy per atom, bandgap and total energy per atom simulataneously. The script to generate the example data is provided in the script folder of the sample_data_multi_prop. Another example of training electron and phonon density of states is provided also.
+
 ```
 train_alignn.py --root_dir "alignn/examples/sample_data_multi_prop" --config "alignn/examples/sample_data/config_example.json" --output_dir=temp
 ```
+
 #### Automated model training
+
 Users can try training using multiple example scripts to run multiple dataset (such as JARVIS-DFT, Materials project, QM9_JCTC etc.). Look into the [alignn/scripts/train_*.py](https://github.com/usnistgov/alignn/tree/main/alignn/scripts) folder. This is done primarily to make the trainings more automated rather than making folder/ csv files etc.
 These scripts automatically download datasets from [Databases in jarvis-tools](https://jarvis-tools.readthedocs.io/en/master/databases.html) and train several models. Make sure you specify your specific queuing system details in the scripts.
 
@@ -149,7 +161,7 @@ Additional example trainings for [2D-exfoliation energy](https://colab.research.
 Using pre-trained models
 -------------------------
 
-All the trained models are distributed on [Figshare](https://figshare.com/projects/ALIGNN_models/126478.
+All the trained models are distributed on [Figshare](<https://figshare.com/projects/ALIGNN_models/126478>.
 
 The [pretrained.py script](https://github.com/usnistgov/alignn/blob/develop/alignn/pretrained.py) can be applied to use them. These models can be used to directly make predictions.
 
@@ -158,12 +170,12 @@ A brief help section (`-h`) is shown using:
 ```
 pretrained.py -h
 ```
+
 An example of prediction formation energy per atom using JARVIS-DFT dataset trained model is shown below:
 
 ```
 pretrained.py --model_name jv_formation_energy_peratom_alignn --file_format poscar --file_path alignn/examples/sample_data/POSCAR-JVASP-10.vasp
 ```
-
 
 <a name="webapp"></a>
 Web-app
@@ -172,8 +184,6 @@ Web-app
 A basic web-app is for direct-prediction available at [JARVIS-ALIGNN app](https://jarvis.nist.gov/jalignn/). Given atomistic structure in POSCAR format it predict formation energy, total energy per atom and bandgap using data trained on JARVIS-DFT dataset.
 
 ![JARVIS-ALIGNN](https://github.com/usnistgov/alignn/blob/develop/alignn/tex/jalignn.PNG)
-
-
 
 <a name="alignnff"></a>
 ALIGNN-FF
@@ -220,16 +230,13 @@ To train ALIGNN-FF use `train_alignn.py` script which uses `atomwise_alignn` mod
 
 AtomWise prediction example which looks for similar setup as before but unstead of `id_prop.csv`, it requires `id_prop.json` file (see example in the sample_data_ff directory). An example to compile vasprun.xml files into a id_prop.json is kept [here](https://colab.research.google.com/gist/knc6/5513b21f5fd83a7943509ffdf5c3608b/make_id_prop.ipynb). Note ALIGNN-FF requires energy stored as energy per atom:
 
-
 ```
 train_alignn.py --root_dir "alignn/examples/sample_data_ff" --config "alignn/examples/sample_data_ff/config_example_atomwise.json" --output_dir=temp
 ```
 
-
 To finetune model, use `--restart_model_path` tag as well in the above with the path of a pretrained ALIGNN-FF model with same model confurations.
 
-An example for training MLFF for silicon is provided [here](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/Train_ALIGNNFF_Mlearn.ipynb). It is highly recommeded to get familiar with this example before developing a new model. Note: new model configs such as `lg_on_fly` and `add_reverse_forces` should be defaulted to True for newer versions. For MD runs, `use_cutoff_function` is recommended. 
-
+An example for training MLFF for silicon is provided [here](https://colab.research.google.com/github/knc6/jarvis-tools-notebooks/blob/master/jarvis-tools-notebooks/Train_ALIGNNFF_Mlearn.ipynb). It is highly recommeded to get familiar with this example before developing a new model. Note: new model configs such as `lg_on_fly` and `add_reverse_forces` should be defaulted to True for newer versions. For MD runs, `use_cutoff_function` is recommended.
 
 A pretrained ALIGNN-FF (under active development right now) can be used for predicting several properties, such as:
 
@@ -269,7 +276,6 @@ Please refer to [JARVIS-Leaderboard](https://pages.nist.gov/jarvis_leaderboard/)
 |     High/low-n-powerfactor              |     1000 µW(mK<sup>2</sup>)<sup>-1</sup>    |     0.74      |
 |     High/low-p-powerfactor              |     1000µW(mK<sup>2</sup>)<sup>-1</sup>     |     0.74      |
 
-
 ### 2) On JARVIS-DFT 2021 dataset (regression)
 
 |     Property                                 |     Units                 |     MAD       |     CFID      |     CGCNN    |     ALIGNN    |     MAD: MAE    |
@@ -304,7 +310,6 @@ Please refer to [JARVIS-Leaderboard](https://pages.nist.gov/jarvis_leaderboard/)
 |     p-Seebeck                                |     µVK<sup>-1</sup>                |     166.33    |     62.74     |     52.68    |     42.42     |     3.92        |
 |     p-PF                                     |     µW(mK<sup>2</sup>)<sup>-1</sup>            |     691.67    |     505.45    |     560.8    |     440.26    |     1.57        |
 
-
 ### 3) On Materials project 2018 dataset
 
 The results from models other than ALIGNN are reported as given in corresponding papers, not necessarily reproduced by us.
@@ -313,8 +318,6 @@ The results from models other than ALIGNN are reported as given in corresponding
 |-------------|---------------|-------------|--------------|--------------|---------------|---------------|---------------|----------------|
 |     Ef      |     eV(atom)<sup>-1</sup>    |     0.93    |     0.104    |     0.039    |     0.028     |     0.035     |     0.022     |     42.27      |
 |     Eg      |     eV        |     1.35    |     0.434    |     0.388    |     0.33      |     -         |     0.218     |     6.19       |
-
-
 
 ### 4) On QM9 dataset
 
@@ -334,7 +337,6 @@ Note the [issue](https://github.com/usnistgov/alignn/issues/54) related to QM9 d
 |    H   | eV    |  0.014 |  0.012  |  0.00653  | 0.0147 |
 |    G   | eV    |  0.014 |  0.012  |  0.00756  | 0.0144 |
 
-
 ### 5) On hMOF dataset
 
 | Property           | Unit            | MAD     | MAE    | MAD:MAE | R<sup>2</sup> | RMSE   |
@@ -347,7 +349,6 @@ Note the [issue](https://github.com/usnistgov/alignn/issues/54) related to QM9 d
 | All adsp           | mol kg<sup>-1</sup>   | 1.70    | 0.18   | 9.44    | 0.95  | 0.49   |
 | Adsp at 0.01bar    | mol kg<sup>-1</sup>  | 0.12    | 0.04   | 3.00    | 0.77  | 0.11   |
 | Adsp at 2.5bar     | mol kg<sup>-1</sup>   | 2.16    | 0.48   | 4.50    | 0.90  | 0.97   |
-
 
 ### 6) On qMOF dataset
 
@@ -373,9 +374,6 @@ coming soon!
 |----------------------------------------------|---------------------------|---------------|---------------|--------------|---------------|-----------------|
 |     10k                                      |     0.988                 |   1.0117      |    1.059      |    0.8837    |     0.61      |     -           |
 
-
-
-
 <a name="notes"></a>
 Useful notes (based on some of the queries we received)
 ---------------------------------------------------------
@@ -384,10 +382,9 @@ Useful notes (based on some of the queries we received)
 2) While comnventional '.cif' and '.pdb' files can be read using jarvis-tools, for complex files you might have to install `cif2cell` and `pytraj` respectively i.e.`pip install cif2cell==2.0.0a3` and `conda install -c ambermd pytraj`.
 3) Make sure you use `batch_size` as 32 or 64 for large datasets, and not 2 as given in the example config file, else it will take much longer to train, and performnce might drop a lot.
 4) Note that `train_alignn.py` and `pretrained.py` in alignn folder are actually python executable scripts. So, even if you don't provide absolute path of these scripts, they should work.
-5) Learn about the issue with QM9 results here: https://github.com/usnistgov/alignn/issues/54
+5) Learn about the issue with QM9 results here: <https://github.com/usnistgov/alignn/issues/54>
 6) Make sure you have `pandas` version as >1.2.3.
 7) Starting March 2024, pytroch-ignite dependency will be removed to enable conda-forge build.
-
 
 <a name="refs"></a>
 References
@@ -403,7 +400,6 @@ References
 8) [Unified graph neural network force-field for the periodic table](https://pubs.rsc.org/en/content/articlehtml/2023/dd/d2dd00096b)
 9) [Large Scale Benchmark of Materials Design Methods](https://arxiv.org/abs/2306.11688)
 
-
 Please see detailed publications list [here](https://jarvis-tools.readthedocs.io/en/master/publications.html).
 
 <a name="contrib"></a>
@@ -416,13 +412,13 @@ For detailed instructions, please see [Contribution instructions](https://github
 Correspondence
 --------------------
 
-Please report bugs as Github issues (https://github.com/usnistgov/alignn/issues) or email to kamal.choudhary@nist.gov.
+Please report bugs as Github issues (<https://github.com/usnistgov/alignn/issues>) or email to <kamal.choudhary@nist.gov>.
 
 <a name="fund"></a>
 Funding support
 --------------------
 
-NIST-MGI (https://www.nist.gov/mgi).
+NIST-MGI (<https://www.nist.gov/mgi>).
 
 Code of conduct
 --------------------
